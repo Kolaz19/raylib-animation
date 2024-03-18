@@ -22,6 +22,7 @@ struct Animation {
     int startFrame;
     int endFrame;
     int currentFrame;
+    Rectangle origin;
     float frameDuration;
     float advancedTime;
     AnimationType type;

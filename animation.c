@@ -1,5 +1,8 @@
 #include "animation.h"
 #include "include/raylib.h"
+#include <stdio.h>
+
+static void setOriginPos(Rectangle* origin, int *currentFrame, int* textureWidth);
 
 Spritesheet LoadSpritesheet(const char* fileName, int frameWidth, int frameHeight) {
     Spritesheet spriteSheet;
@@ -27,11 +30,15 @@ Animation createAnimation(Spritesheet* spriteSheet, int startFrame, int endFrame
     animation.advancedTime = 0;
     animation.type = type;
     animation.isPlaying = type == LOOP ? true : false; 
+    animation.origin.width =  spriteSheet->frameWidth;
+    animation.origin.height =  spriteSheet->frameHeight;
+    setOriginPos(&animation.origin, &animation.currentFrame, &animation.spriteSheet->texture.width);
 
     return animation;
 }
 
 void advanceAnimation(Animation* animation) {
+    int previousFrame = animation->currentFrame;
     if (!animation->isPlaying) {
 	return;
     }
@@ -47,7 +54,12 @@ void advanceAnimation(Animation* animation) {
 	animation->currentFrame = animation->startFrame;
 	if (animation->type == PLAY_ONCE) {
 	    animation->isPlaying = false;
+	    return;
 	}
+    }
+    //Set new origin when current frame has changed
+    if (previousFrame != animation->currentFrame) {
+	setOriginPos(&animation->origin, &animation->currentFrame, &animation->spriteSheet->texture.width);
     }
 }
 
@@ -56,9 +68,12 @@ void drawAnimation(Animation* animation, float posX, float posY, float width, fl
 	return;
     }
 
-    int amountFramesX = animation->spriteSheet->texture.width / animation->spriteSheet->frameWidth;
-    int yPos = (animation->currentFrame - 1) / amountFramesX * animation->spriteSheet->frameHeight;
-    int xPos = (animation->currentFrame - 1 - ((animation->currentFrame / amountFramesX) * amountFramesX)) * animation->spriteSheet->frameWidth;
-    Rectangle source = { xPos, yPos, animation->spriteSheet->frameWidth, animation->spriteSheet->frameHeight};
-    DrawTexturePro(animation->spriteSheet->texture, source, (Rectangle){posX,posY, width,height}, (Vector2) {originX,originY}, rotation,  WHITE);
+    DrawTexturePro(animation->spriteSheet->texture, animation->origin, (Rectangle){posX,posY, width,height}, (Vector2) {originX,originY}, rotation,  WHITE);
+}
+
+static void setOriginPos(Rectangle* origin, int *currentFrame, int* textureWidth) {
+    int amountFramesX = *textureWidth / origin->width;
+    origin->y = (int)((*currentFrame - 1) / amountFramesX ) * origin->height;
+    origin->x = (int)(*currentFrame - 1 - ((*currentFrame / amountFramesX) * amountFramesX)) * origin->width;
+    printf("X:%f\tY:%f\n",origin->x,origin->y);
 }
