@@ -63,12 +63,12 @@ void advanceAnimation(Animation* animation) {
     }
 }
 
-void drawAnimation(Animation* animation, float posX, float posY, float width, float height, float originX,float originY, float rotation ) {
+void drawAnimation(Animation* animation, Rectangle* destination, Vector2* origin, float rotation ) {
     if (!animation->isPlaying) {
 	return;
     }
 
-    DrawTexturePro(animation->spriteSheet->texture, animation->origin, (Rectangle){posX,posY, width,height}, (Vector2) {originX,originY}, rotation,  WHITE);
+    DrawTexturePro(animation->spriteSheet->texture, animation->origin, *destination, *origin, rotation,  WHITE);
 }
 
 static void setOriginPos(Rectangle* origin, int *currentFrame, int* textureWidth) {

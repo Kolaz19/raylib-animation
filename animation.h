@@ -33,6 +33,6 @@ Spritesheet LoadSpritesheet(const char* fileName,  int amountFramesX, int amount
 void unloadSpritesheet(Spritesheet* spriteSheet);
 
 Animation createAnimation(Spritesheet* spriteSheet, int startFrame, int endFrame, float frameDuration, AnimationType type);
-void drawAnimation(Animation* animation, float posX, float posY, float width, float height, float originX,float originY, float rotation );
+void drawAnimation(Animation* animation, Rectangle* destination, Vector2* origin, float rotation );
 void advanceAnimation(Animation* animation);
 #endif
