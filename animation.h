@@ -8,8 +8,8 @@ typedef struct Animation Animation;
 
 struct Spritesheet {
     Texture2D texture;
-    int frameWidth;
-    int frameHeight;
+    int amountFramesX;
+    int amountFramesY;
 };
 
 typedef enum AnimationType {
@@ -29,7 +29,7 @@ struct Animation {
     bool isPlaying;
 };
 
-Spritesheet LoadSpritesheet(const char* fileName,  int frameWidth, int frameHeight);
+Spritesheet LoadSpritesheet(const char* fileName,  int amountFramesX, int amountFramesY);
 void unloadSpritesheet(Spritesheet* spriteSheet);
 
 Animation createAnimation(Spritesheet* spriteSheet, int startFrame, int endFrame, float frameDuration, AnimationType type);

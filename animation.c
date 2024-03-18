@@ -4,14 +4,14 @@
 
 static void setOriginPos(Rectangle* origin, int *currentFrame, int* textureWidth);
 
-Spritesheet LoadSpritesheet(const char* fileName, int frameWidth, int frameHeight) {
+Spritesheet LoadSpritesheet(const char* fileName, int amountFramesX, int amountFramesY) {
     Spritesheet spriteSheet;
 
     Texture2D texture = LoadTexture(fileName);
     spriteSheet.texture = texture;
 
-    spriteSheet.frameWidth = frameWidth;
-    spriteSheet.frameHeight = frameHeight;
+    spriteSheet.amountFramesX = amountFramesX;
+    spriteSheet.amountFramesY = amountFramesY;
 
     return spriteSheet;
 }
@@ -30,8 +30,8 @@ Animation createAnimation(Spritesheet* spriteSheet, int startFrame, int endFrame
     animation.advancedTime = 0;
     animation.type = type;
     animation.isPlaying = type == LOOP ? true : false; 
-    animation.origin.width =  spriteSheet->frameWidth;
-    animation.origin.height =  spriteSheet->frameHeight;
+    animation.origin.width =  (int)(spriteSheet->texture.width / spriteSheet->amountFramesX);
+    animation.origin.height =  (int)(spriteSheet->texture.height / spriteSheet->amountFramesY);
     setOriginPos(&animation.origin, &animation.currentFrame, &animation.spriteSheet->texture.width);
 
     return animation;
