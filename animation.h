@@ -35,4 +35,5 @@ void unloadSpritesheet(Spritesheet* spriteSheet);
 Animation createAnimation(Spritesheet* spriteSheet, int startFrame, int endFrame, float frameDuration, AnimationType type);
 void drawAnimation(Animation* animation, Rectangle* destination, Vector2* origin, float rotation );
 void advanceAnimation(Animation* animation);
+void startAnimation(Animation* animation);
 #endif

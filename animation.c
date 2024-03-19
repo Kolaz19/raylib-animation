@@ -1,6 +1,5 @@
 #include "animation.h"
 #include "include/raylib.h"
-#include <stdio.h>
 
 static void setOriginPos(Rectangle* origin, int *currentFrame, int* textureWidth);
 
@@ -35,6 +34,18 @@ Animation createAnimation(Spritesheet* spriteSheet, int startFrame, int endFrame
     setOriginPos(&animation.origin, &animation.currentFrame, &animation.spriteSheet->texture.width);
 
     return animation;
+}
+
+void startAnimation(Animation* animation) {
+    animation->isPlaying = true;
+    animation->currentFrame = animation->startFrame;
+    setOriginPos(&animation->origin, &animation->currentFrame, &animation->spriteSheet->texture.width);
+}
+
+void stopAnimation(Animation* animation) {
+    animation->isPlaying = false;
+    animation->currentFrame = animation->startFrame;
+    setOriginPos(&animation->origin, &animation->currentFrame, &animation->spriteSheet->texture.width);
 }
 
 void advanceAnimation(Animation* animation) {
@@ -75,5 +86,4 @@ static void setOriginPos(Rectangle* origin, int *currentFrame, int* textureWidth
     int amountFramesX = *textureWidth / origin->width;
     origin->y = (int)((*currentFrame - 1) / amountFramesX ) * origin->height;
     origin->x = (int)(*currentFrame - 1 - ((*currentFrame / amountFramesX) * amountFramesX)) * origin->width;
-    printf("X:%f\tY:%f\n",origin->x,origin->y);
 }
