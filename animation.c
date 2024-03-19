@@ -39,20 +39,38 @@ Animation createAnimation(Spritesheet* spriteSheet, int startFrame, int endFrame
 void startAnimation(Animation* animation) {
     animation->isPlaying = true;
     animation->currentFrame = animation->startFrame;
+    animation->advancedTime = 0;
     setOriginPos(&animation->origin, &animation->currentFrame, &animation->spriteSheet->texture.width);
 }
 
 void stopAnimation(Animation* animation) {
     animation->isPlaying = false;
     animation->currentFrame = animation->startFrame;
+    animation->advancedTime = 0;
     setOriginPos(&animation->origin, &animation->currentFrame, &animation->spriteSheet->texture.width);
 }
 
+void enableAnimation(Animation* animation) {
+    animation->isPlaying = true;
+}
+
+void disableAnimation(Animation* animation) {
+    animation->isPlaying = false;
+}
+
+int getCurrentFrame(Animation* animation) {
+    return animation->currentFrame - animation->startFrame + 1;
+}
+
+bool freshSwitch(Animation* animation) {
+    return animation->previousFrame != animation->currentFrame;
+}
+
 void advanceAnimation(Animation* animation) {
-    int previousFrame = animation->currentFrame;
     if (!animation->isPlaying) {
 	return;
     }
+    animation->previousFrame = animation->currentFrame;
 
     animation->advancedTime += GetFrameTime();
     if (animation->advancedTime >= animation->frameDuration) {
@@ -65,11 +83,10 @@ void advanceAnimation(Animation* animation) {
 	animation->currentFrame = animation->startFrame;
 	if (animation->type == PLAY_ONCE) {
 	    animation->isPlaying = false;
-	    return;
 	}
     }
     //Set new origin when current frame has changed
-    if (previousFrame != animation->currentFrame) {
+    if (animation->previousFrame != animation->currentFrame) {
 	setOriginPos(&animation->origin, &animation->currentFrame, &animation->spriteSheet->texture.width);
     }
 }

@@ -22,6 +22,7 @@ struct Animation {
     int startFrame;
     int endFrame;
     int currentFrame;
+    int previousFrame;
     Rectangle origin;
     float frameDuration;
     float advancedTime;
@@ -36,4 +37,9 @@ Animation createAnimation(Spritesheet* spriteSheet, int startFrame, int endFrame
 void drawAnimation(Animation* animation, Rectangle* destination, Vector2* origin, float rotation );
 void advanceAnimation(Animation* animation);
 void startAnimation(Animation* animation);
+void stopAnimation(Animation* animation);
+void enableAnimation(Animation* animation);
+void disableAnimation(Animation* animation);
+int getCurrentFrame(Animation* animation);
+bool freshSwitch(Animation* animation);
 #endif
