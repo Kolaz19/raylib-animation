@@ -62,15 +62,14 @@ int getCurrentFrame(Animation* animation) {
     return animation->currentFrame - animation->startFrame + 1;
 }
 
-bool freshSwitch(Animation* animation) {
-    return animation->previousFrame != animation->currentFrame;
+bool startOfFrame(Animation* animation) {
+    return animation->advancedTime == 0;
 }
 
 void advanceAnimation(Animation* animation) {
     if (!animation->isPlaying) {
 	return;
     }
-    animation->previousFrame = animation->currentFrame;
 
     animation->advancedTime += GetFrameTime();
     if (animation->advancedTime >= animation->frameDuration) {
@@ -86,7 +85,7 @@ void advanceAnimation(Animation* animation) {
 	}
     }
     //Set new origin when current frame has changed
-    if (animation->previousFrame != animation->currentFrame) {
+    if (animation->advancedTime == 0) {
 	setOriginPos(&animation->origin, &animation->currentFrame, &animation->spriteSheet->texture.width);
     }
 }
