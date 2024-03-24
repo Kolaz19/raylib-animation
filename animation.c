@@ -45,6 +45,12 @@ void startAnimation(Animation* animation) {
     animation->currentFrame = animation->startFrame;
     animation->advancedTime = 0;
     setOrigin(&animation->origin, &animation->currentFrame, animation->spriteSheet);
+    if (animation->flipX == true) {
+	applyFlip(animation, FLIPX);
+    }
+    if (animation->flipY == true) {
+	applyFlip(animation, FLIPY);
+    }
 }
 
 void stopAnimation(Animation* animation) {
