@@ -1,7 +1,8 @@
 #include "animation.h"
 #include "include/raylib.h"
 
-static void setOriginPos(Rectangle* origin, int *currentFrame, int* textureWidth);
+static void setOrigin(Rectangle* origin, int *currentFrame, Spritesheet* spriteSheet);
+void applyFlip(Animation* animation, FlipAxis axis);
 
 Spritesheet LoadSpritesheet(const char* fileName, int amountFramesX, int amountFramesY) {
     Spritesheet spriteSheet;
@@ -19,6 +20,11 @@ void unloadSpritesheet(Spritesheet* spriteSheet) {
     UnloadTexture((spriteSheet->texture));
 }
 
+void setShiftValues(Animation* animation, float shiftValueX, float shiftValueY) {
+    animation->flipShiftX = shiftValueX;
+    animation->flipShiftY = shiftValueY;
+}
+
 Animation createAnimation(Spritesheet* spriteSheet, int startFrame, int endFrame, float frameDuration, AnimationType type) {
     Animation animation;
     animation.spriteSheet = spriteSheet;
@@ -29,9 +35,7 @@ Animation createAnimation(Spritesheet* spriteSheet, int startFrame, int endFrame
     animation.advancedTime = 0;
     animation.type = type;
     animation.isPlaying = type == LOOP ? true : false; 
-    animation.origin.width =  (int)(spriteSheet->texture.width / spriteSheet->amountFramesX);
-    animation.origin.height =  (int)(spriteSheet->texture.height / spriteSheet->amountFramesY);
-    setOriginPos(&animation.origin, &animation.currentFrame, &animation.spriteSheet->texture.width);
+    setOrigin(&animation.origin, &animation.currentFrame, animation.spriteSheet);
 
     return animation;
 }
@@ -40,14 +44,14 @@ void startAnimation(Animation* animation) {
     animation->isPlaying = true;
     animation->currentFrame = animation->startFrame;
     animation->advancedTime = 0;
-    setOriginPos(&animation->origin, &animation->currentFrame, &animation->spriteSheet->texture.width);
+    setOrigin(&animation->origin, &animation->currentFrame, animation->spriteSheet);
 }
 
 void stopAnimation(Animation* animation) {
     animation->isPlaying = false;
     animation->currentFrame = animation->startFrame;
     animation->advancedTime = 0;
-    setOriginPos(&animation->origin, &animation->currentFrame, &animation->spriteSheet->texture.width);
+    setOrigin(&animation->origin, &animation->currentFrame, animation->spriteSheet);
 }
 
 void enableAnimation(Animation* animation) {
@@ -64,6 +68,46 @@ int getCurrentFrame(Animation* animation) {
 
 bool startOfFrame(Animation* animation) {
     return animation->advancedTime == 0;
+}
+
+void flip(Animation* animation, FlipAxis axis) {
+    //Flip was already applied
+    if ((axis == FLIPX && animation->flipX == true)
+	|| (axis == FLIPY && animation->flipY == true)) {
+	return;
+    }
+
+    if (axis == FLIPX) {
+	animation->flipX = true;
+    } else {
+	animation->flipY = true;
+    }
+    applyFlip(animation, axis);
+}
+
+void flipReset(Animation* animation, FlipAxis axis) {
+    //Flip is not applied
+    if ((axis == FLIPX && animation->flipX == false)
+	|| (axis == FLIPY && animation->flipY == false)) {
+	return;
+    }
+
+    if (axis == FLIPX) {
+	animation->flipX = false;
+    } else {
+	animation->flipY = false;
+    }
+    setOrigin(&animation->origin, &animation->currentFrame, animation->spriteSheet);
+}
+
+void applyFlip(Animation* animation, FlipAxis axis) {
+    if (axis == FLIPX) {
+	animation->origin.width *= -1;
+	animation->origin.x += animation->flipShiftX;
+    } else {
+	animation->origin.height *= -1;
+	animation->origin.y += animation->flipShiftY;
+    }
 }
 
 void advanceAnimation(Animation* animation) {
@@ -86,11 +130,17 @@ void advanceAnimation(Animation* animation) {
     }
     //Set new origin when current frame has changed
     if (animation->advancedTime == 0) {
-	setOriginPos(&animation->origin, &animation->currentFrame, &animation->spriteSheet->texture.width);
+	setOrigin(&animation->origin, &animation->currentFrame, animation->spriteSheet);
+	if (animation->flipX == true) {
+	    applyFlip(animation, FLIPX);
+	}
+	if (animation->flipY == true) {
+	    applyFlip(animation, FLIPY);
+	}
     }
 }
 
-void drawAnimation(Animation* animation, Rectangle* destination, Vector2* origin, float rotation ) {
+void drawAnimation(Animation* animation, Rectangle* destination, Vector2* origin, float rotation) {
     if (!animation->isPlaying) {
 	return;
     }
@@ -98,8 +148,9 @@ void drawAnimation(Animation* animation, Rectangle* destination, Vector2* origin
     DrawTexturePro(animation->spriteSheet->texture, animation->origin, *destination, *origin, rotation,  WHITE);
 }
 
-static void setOriginPos(Rectangle* origin, int *currentFrame, int* textureWidth) {
-    int amountFramesX = *textureWidth / origin->width;
-    origin->y = (int)((*currentFrame - 1) / amountFramesX ) * origin->height;
-    origin->x = (int)(*currentFrame - 1 - ((*currentFrame / amountFramesX) * amountFramesX)) * origin->width;
+static void setOrigin(Rectangle* origin, int *currentFrame, Spritesheet* spriteSheet) {
+    origin->width =  (int)(spriteSheet->texture.width / spriteSheet->amountFramesX);
+    origin->height =  (int)(spriteSheet->texture.height / spriteSheet->amountFramesY);
+    origin->y = (int)((*currentFrame - 1) / spriteSheet->amountFramesX ) * origin->height;
+    origin->x = (int)(*currentFrame - 1 - ((*currentFrame / spriteSheet->amountFramesX) * spriteSheet->amountFramesX)) * origin->width;
 }
