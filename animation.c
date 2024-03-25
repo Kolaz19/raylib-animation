@@ -2,7 +2,6 @@
 #include "include/raylib.h"
 
 static void setOrigin(Rectangle* origin, int *currentFrame, Spritesheet* spriteSheet);
-void applyFlip(Animation* animation, FlipAxis axis);
 
 Spritesheet LoadSpritesheet(const char* fileName, int amountFramesX, int amountFramesY) {
     Spritesheet spriteSheet;
@@ -45,12 +44,6 @@ void startAnimation(Animation* animation) {
     animation->currentFrame = animation->startFrame;
     animation->advancedTime = 0;
     setOrigin(&animation->origin, &animation->currentFrame, animation->spriteSheet);
-    if (animation->flipX == true) {
-	applyFlip(animation, FLIPX);
-    }
-    if (animation->flipY == true) {
-	applyFlip(animation, FLIPY);
-    }
 }
 
 void stopAnimation(Animation* animation) {
@@ -77,42 +70,18 @@ bool startOfFrame(Animation* animation) {
 }
 
 void flip(Animation* animation, FlipAxis axis) {
-    //Flip was already applied
-    if ((axis == FLIPX && animation->flipX == true)
-	|| (axis == FLIPY && animation->flipY == true)) {
-	return;
-    }
-
     if (axis == FLIPX) {
 	animation->flipX = true;
     } else {
 	animation->flipY = true;
     }
-    applyFlip(animation, axis);
 }
 
 void flipReset(Animation* animation, FlipAxis axis) {
-    //Flip is not applied
-    if ((axis == FLIPX && animation->flipX == false)
-	|| (axis == FLIPY && animation->flipY == false)) {
-	return;
-    }
-
     if (axis == FLIPX) {
 	animation->flipX = false;
     } else {
 	animation->flipY = false;
-    }
-    setOrigin(&animation->origin, &animation->currentFrame, animation->spriteSheet);
-}
-
-void applyFlip(Animation* animation, FlipAxis axis) {
-    if (axis == FLIPX) {
-	animation->origin.width *= -1;
-	animation->origin.x += animation->flipShiftX;
-    } else {
-	animation->origin.height *= -1;
-	animation->origin.y += animation->flipShiftY;
     }
 }
 
@@ -137,12 +106,6 @@ void advanceAnimation(Animation* animation) {
     //Set new origin when current frame has changed
     if (animation->advancedTime == 0) {
 	setOrigin(&animation->origin, &animation->currentFrame, animation->spriteSheet);
-	if (animation->flipX == true) {
-	    applyFlip(animation, FLIPX);
-	}
-	if (animation->flipY == true) {
-	    applyFlip(animation, FLIPY);
-	}
     }
 }
 
@@ -151,7 +114,20 @@ void drawAnimation(Animation* animation, Rectangle* destination, Vector2* origin
 	return;
     }
 
-    DrawTexturePro(animation->spriteSheet->texture, animation->origin, *destination, *origin, rotation,  WHITE);
+    //DrawTexturePro(animation->spriteSheet->texture, animation->origin, *destination, *origin, rotation,  WHITE);
+    DrawTexturePro(animation->spriteSheet->texture, 
+	    (Rectangle) {animation->origin.x, 
+			 animation->origin.y,
+			 animation->flipX == true ? animation->origin.width * -1 : animation->origin.width,
+			 animation->flipY == true ? animation->origin.height * -1 : animation->origin.height},
+	    (Rectangle) {animation->flipX == true ? destination->x + animation->flipShiftX : destination->x, 
+			 animation->flipY == true ? destination->y + animation->flipShiftY : destination->y,
+			 destination->width,
+			 destination->height},
+	    *origin,
+	    rotation,
+	    WHITE);
+
 }
 
 static void setOrigin(Rectangle* origin, int *currentFrame, Spritesheet* spriteSheet) {
