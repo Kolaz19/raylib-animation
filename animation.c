@@ -65,6 +65,10 @@ int getCurrentFrame(Animation* animation) {
     return animation->currentFrame - animation->startFrame + 1;
 }
 
+/*
+ * Return true if last call of advanceAnimation moved
+ * origin to next frame
+ */
 bool startOfFrame(Animation* animation) {
     return animation->advancedTime == 0;
 }
@@ -85,6 +89,10 @@ void flipReset(Animation* animation, FlipAxis axis) {
     }
 }
 
+
+/*
+ * Set a new origin rectangle after a specific amount of time.
+ */
 void advanceAnimation(Animation* animation) {
     if (!animation->isPlaying) {
 	return;
@@ -92,6 +100,7 @@ void advanceAnimation(Animation* animation) {
 
     animation->advancedTime += GetFrameTime();
     if (animation->advancedTime >= animation->frameDuration) {
+	//After switching to a new frame, leftover advanced time is cut off
 	animation->advancedTime = 0;
 	animation->currentFrame++;
     }
@@ -109,12 +118,16 @@ void advanceAnimation(Animation* animation) {
     }
 }
 
+/*
+ * Draw current frame at destination.
+ * Calculate flipped frame dynamically in DrawTexturePro parameters.
+ * In this case, destination frame has to be shifted when the texture is not centered.
+ */
 void drawAnimation(Animation* animation, Rectangle* destination, Vector2* origin, float rotation) {
     if (!animation->isPlaying) {
 	return;
     }
 
-    //DrawTexturePro(animation->spriteSheet->texture, animation->origin, *destination, *origin, rotation,  WHITE);
     DrawTexturePro(animation->spriteSheet->texture, 
 	    (Rectangle) {animation->origin.x, 
 			 animation->origin.y,
@@ -130,6 +143,10 @@ void drawAnimation(Animation* animation, Rectangle* destination, Vector2* origin
 
 }
 
+/*
+ * Calculate the origin rectangle based on the width/height and the 
+ * amount of frames on the x-asix on the original texture.
+ */
 static void setOrigin(Rectangle* origin, int *currentFrame, Spritesheet* spriteSheet) {
     origin->width =  (int)(spriteSheet->texture.width / spriteSheet->amountFramesX);
     origin->height =  (int)(spriteSheet->texture.height / spriteSheet->amountFramesY);
