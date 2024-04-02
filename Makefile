@@ -11,7 +11,7 @@ LINKERS = $(LIB_DIR) -lraylib /usr/lib/x86_64-linux-gnu/libGL.so -lm -lpthread -
 C_FILES = $(wildcard *.c)
 OBJ_FILES = $(patsubst %.c, $(OBJ_DIR)%.o, $(C_FILES))
 
-build_example: main
+build: main
 
 main: $(OBJ_FILES)
 	$(CC) $(DEBUG_FLAG) $(C_FLAGS) -o main $(OBJ_DIR)*.o $(LINKERS)
@@ -19,8 +19,14 @@ main: $(OBJ_FILES)
 $(OBJ_FILES): $(OBJ_DIR)%.o: %.c
 	$(CC) -c $(DEBUG_FLAG) $< -o $@
 
+buildlib: prelib
+	ar -rc libanim.a $(OBJ_DIR)animation.o
+
+prelib: animation.c 
+	$(CC) -c animation.c -o $(OBJ_DIR)animation.o
+
 clean: 
-	rm -f $(OBJ_DIR)*.o main
+	rm -f $(OBJ_DIR)*.o main libanim.a
 
 run: 
 	./main
