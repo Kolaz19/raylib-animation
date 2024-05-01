@@ -74,8 +74,8 @@ int main(void)
 	}
 
 	//Disable movement when player is attacking
-	if (!isPlayOnceAnimationPlaying(anim)) movePlayer(&rectPlayer);
-
+	if (!isPlayOnceAnimationPlaying(anim)) 
+	    movePlayer(&rectPlayer);
 
 	BeginDrawing();
 	ClearBackground(RAYWHITE);

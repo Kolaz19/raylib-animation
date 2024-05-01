@@ -1,4 +1,10 @@
+OS = lin
+ifeq ($(OS), lin)
 CC = gcc
+else
+CC = x86_64-w64-mingw32-gcc
+endif
+
 OBJ_DIR = ./object_files/
 
 C_FLAGS = -Wall -Wextra -Wconversion -std=c99 -fdiagnostics-color=always -pedantic
@@ -19,7 +25,7 @@ main: $(OBJ_FILES)
 $(OBJ_FILES): $(OBJ_DIR)%.o: %.c
 	$(CC) -c $(DEBUG_FLAG) $< -o $@
 
-buildlib: prelib
+lib: prelib
 	ar -rc libanim.a $(OBJ_DIR)animation.o
 
 prelib: animation.c 
