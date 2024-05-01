@@ -34,6 +34,11 @@ Animation createAnimation(Spritesheet* spriteSheet, int startFrame, int endFrame
     animation.advancedTime = 0;
     animation.type = type;
     animation.isPlaying = type == LOOP ? true : false; 
+
+    animation.flipShiftX = 0;
+    animation.flipShiftY = 0;
+    animation.flipX = false;
+    animation.flipY = false;
     setOrigin(&animation.origin, &animation.currentFrame, animation.spriteSheet);
 
     return animation;

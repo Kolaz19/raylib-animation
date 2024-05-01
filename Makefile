@@ -1,8 +1,10 @@
 OS = lin
 ifeq ($(OS), lin)
 CC = gcc
+LIB_NAME = libanim.a
 else
 CC = x86_64-w64-mingw32-gcc
+LIB_NAME = libanimwin.a
 endif
 
 OBJ_DIR = ./object_files/
@@ -26,13 +28,13 @@ $(OBJ_FILES): $(OBJ_DIR)%.o: %.c
 	$(CC) -c $(DEBUG_FLAG) $< -o $@
 
 lib: prelib
-	ar -rc libanim.a $(OBJ_DIR)animation.o
+	ar -rc $(LIB_NAME) $(OBJ_DIR)animation.o
 
 prelib: animation.c 
 	$(CC) -c animation.c -o $(OBJ_DIR)animation.o
 
 clean: 
-	rm -f $(OBJ_DIR)*.o main libanim.a
+	rm -f $(OBJ_DIR)*.o main *.a
 
 run: 
 	./main
