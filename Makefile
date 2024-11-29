@@ -1,4 +1,10 @@
 OS = lin
+DEBUG_FLAG = -g
+
+ifeq ($(MAKECMDGOALS), lib)
+DEBUG_FLAG =
+endif
+
 ifeq ($(OS), lin)
 CC = gcc
 LIB_NAME = libanim.a
@@ -10,7 +16,6 @@ endif
 OBJ_DIR = ./object_files/
 
 C_FLAGS = -Wall -Wextra -Wconversion -std=c99 -fdiagnostics-color=always -pedantic
-DEBUG_FLAG = -g
 
 LIB_DIR = -L ./lib
 
