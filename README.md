@@ -24,7 +24,7 @@ We can use function `setShiftValues()` for that.
 
 ## Usage
 
-Just put animation.c and animation.c in your project or build static library in Makefile with `make buildlib`.
+Just put animation.c and animation.h in your project.
 For an example usage, look into main.c.
 
 ## Credits
