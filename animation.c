@@ -165,7 +165,7 @@ static void setOrigin(Rectangle *origin, int *currentFrame,
                       Spritesheet *spriteSheet) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wconversion"
-    origin->width =
+   origin->width =
         (int)(spriteSheet->texture.width / spriteSheet->amountFramesX);
     origin->height =
         (int)(spriteSheet->texture.height / spriteSheet->amountFramesY);

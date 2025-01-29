@@ -12,7 +12,7 @@ CC = x86_64-w64-mingw32-gcc
 LINKERS = $(LIB_DIR) -lraylibwin -lopengl32 -lgdi32 -lwinmm 
 endif
 
-C_FLAGS = -Wall -Wextra -Wconversion -std=c99 -fdiagnostics-color=always -pedantic
+C_FLAGS = -Wall -Wextra -Wconversion -std=c2x -fdiagnostics-color=always -pedantic
 
 C_FILES = $(wildcard *.c)
 OBJ_FILES = $(patsubst %.c, $(OBJ_DIR)%.o, $(C_FILES))
