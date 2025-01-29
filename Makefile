@@ -23,7 +23,7 @@ main: $(OBJ_FILES)
 	$(CC) $(DEBUG_FLAG) $(C_FLAGS) -o main $(OBJ_DIR)*.o $(LINKERS)
 
 $(OBJ_FILES): $(OBJ_DIR)%.o: %.c
-	$(CC) -c $(DEBUG_FLAG) $< -o $@
+	$(CC) -c $(C_FLAGS) $(DEBUG_FLAG) $< -o $@
 
 clean: 
 	rm -f $(OBJ_DIR)*.o main main.exe

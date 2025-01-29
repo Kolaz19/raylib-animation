@@ -163,6 +163,8 @@ void anim_drawAnimation(Animation *animation, Rectangle *destination,
  */
 static void setOrigin(Rectangle *origin, int *currentFrame,
                       Spritesheet *spriteSheet) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
     origin->width =
         (int)(spriteSheet->texture.width / spriteSheet->amountFramesX);
     origin->height =
@@ -171,4 +173,5 @@ static void setOrigin(Rectangle *origin, int *currentFrame,
         (int)((*currentFrame - 1) / spriteSheet->amountFramesX) * origin->height;
     origin->x = (int)(*currentFrame - 1 - ((*currentFrame / spriteSheet->amountFramesX)
 					  * spriteSheet->amountFramesX)) * origin->width;
+#pragma GCC diagnostic pop
 }
