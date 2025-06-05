@@ -1,3 +1,8 @@
+/**
+ * @file animation.h
+ * @brief Load and play animations from a png file
+ * @details Load multiple animations from one spritesheet
+ */
 #ifndef RAYLIB_ANIMATION
 #define RAYLIB_ANIMATION
 
@@ -6,18 +11,27 @@
 typedef struct Spritesheet Spritesheet;
 typedef struct Animation Animation;
 
+/**
+ * @brief Basis of animations
+ */
 struct Spritesheet {
     Texture2D texture;
+	/// Amount of animation frames on X axis
     int amountFramesX;
+	/// Amount of animation frames on Y axis
     int amountFramesY;
 };
 
 typedef enum AnimationType {
-	/// Reset to first frame after last frame was finished.
-	/// Animation is enabled by default
+	/**
+	 * Reset to first frame after last frame was finished.
+	 * Animation is enabled by default
+	 */
     LOOP,
-	/// Stop at last frame.
-	/// Is disabled by default
+	/**
+	 * Stop at last frame.
+	 * Is disabled by default
+	 */
     PLAY_ONCE
 } AnimationType;
 
@@ -26,16 +40,25 @@ typedef enum FlipAxis {
     FLIPY,
 } FlipAxis;
 
+/**
+ * @brief One animation for multiple consecutive frames in Spritesheet
+ * @details There can be multiple animations for one Spritesheet
+ */
 struct Animation {
     Spritesheet *spriteSheet;
+	/// Tacks the frame in the spritesheet that starts the animation
     int startFrame;
+	/// Tacks the frame in the spritesheet that ends the animation
     int endFrame;
+	/// Tracks the current frame
     int currentFrame;
+	/// Shift the view on the spritesheet on X axis when flipped
     float flipShiftX;
+	/// Shift the view on the spritesheet on Y axis when flipped
     float flipShiftY;
     bool flipX;
     bool flipY;
-    FlipAxis flipMode;
+	/// The rectangle on the spritesheet to draw from
     Rectangle origin;
     float frameDuration;
     float advancedTime;
@@ -47,11 +70,11 @@ Spritesheet anim_loadSpritesheet(const char *fileName, int amountFramesX,
                                  int amountFramesY);
 void anim_unloadSpritesheet(Spritesheet *spriteSheet);
 
-/*
- * From left to right, row to row, set start and end frame of the animation
- * Set frame duration in seconds
+/**
+ * @defails From left to right, row to row, set start and end frame of the animation
  * @param startFrame From left to right on sprite sheet
  * @param endFrame From top to bottom
+ * @param frameDuration How long should each frame last
  */
 Animation anim_createAnimation(Spritesheet *spriteSheet, int startFrame,
                                int endFrame, float frameDuration,
