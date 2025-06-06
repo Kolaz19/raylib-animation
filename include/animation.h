@@ -71,7 +71,7 @@ Spritesheet anim_loadSpritesheet(const char *fileName, int amountFramesX,
 void anim_unloadSpritesheet(Spritesheet *spriteSheet);
 
 /**
- * @defails From left to right, row to row, set start and end frame of the animation
+ * @details From left to right, row to row, set start and end frame of the animation
  * @param startFrame From left to right on sprite sheet
  * @param endFrame From top to bottom
  * @param frameDuration How long should each frame last
