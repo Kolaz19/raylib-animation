@@ -1,4 +1,6 @@
-#include "include/animation.h"
+#include "animation.h"
+#include "raylib/raylib.h"
+#include <assert.h>
 
 static void setOrigin(Rectangle *origin, int *currentFrame,
                       Spritesheet *spriteSheet);
@@ -9,6 +11,7 @@ Spritesheet anim_loadSpritesheet(const char *fileName, int amountFramesX,
 
     Texture2D texture = LoadTexture(fileName);
     spriteSheet.texture = texture;
+	SetTextureFilter(spriteSheet.texture, TEXTURE_FILTER_BILINEAR);
 
     spriteSheet.amountFramesX = amountFramesX;
     spriteSheet.amountFramesY = amountFramesY;
@@ -144,9 +147,9 @@ void anim_drawAnimation(Animation *animation, Rectangle *destination,
     DrawTexturePro(
         animation->spriteSheet->texture,
         (Rectangle){animation->origin.x, animation->origin.y,
-                    animation->flipX == true ? animation->origin.width * -1
+                    animation->flipX == true ? animation->origin.width * -1.0f
                                              : animation->origin.width,
-                    animation->flipY == true ? animation->origin.height * -1
+                    animation->flipY == true ? animation->origin.height * -1.0f
                                              : animation->origin.height},
         (Rectangle){
             animation->flipX == true ? destination->x + animation->flipShiftX
@@ -171,7 +174,8 @@ static void setOrigin(Rectangle *origin, int *currentFrame,
         (int)(spriteSheet->texture.height / spriteSheet->amountFramesY);
     origin->y =
         (int)((*currentFrame - 1) / spriteSheet->amountFramesX) * origin->height;
-    origin->x = (int)(*currentFrame - 1 - ((*currentFrame / spriteSheet->amountFramesX)
-					  * spriteSheet->amountFramesX)) * origin->width;
+	int fullLines = (int)((*currentFrame-1) / spriteSheet->amountFramesX);
+	origin->x = (*currentFrame - 1 - (fullLines * spriteSheet->amountFramesX)) * origin->width;
+	 
 #pragma GCC diagnostic pop
 }
